@@ -10,12 +10,12 @@ import {
 } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBk1v6jy4CvuuRvDMLAKO8qzC4X2BLpsUE",
-  authDomain: "habit-tracker-pacttrack.firebaseapp.com",
-  projectId: "habit-tracker-pacttrack",
-  storageBucket: "habit-tracker-pacttrack.firebasestorage.app",
-  messagingSenderId: "975258431449",
-  appId: "1:975258431449:web:31591969805ff17a0273c8"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 const app = initializeApp(firebaseConfig);

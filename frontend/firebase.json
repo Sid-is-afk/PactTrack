@@ -1,0 +1,11 @@
+{
+  "auth": {
+    "providers": {
+      "emailPassword": true,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "Habit Tracker",
+        "supportEmail": "siddharthkj55@gmail.com"
+      }
+    }
+  }
+}

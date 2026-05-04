@@ -1,0 +1,204 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id // Firebase uid
+  name      String
+  email     String   @unique
+  createdAt DateTime @default(now())
+  theme         String   @default("light")
+  lastResetDate String?
+  xp            Int      @default(0)
+  level         Int      @default(1)
+  updatedAt     DateTime @updatedAt
+
+  goals         Goal[]
+  tasks         Task[]
+  taskLogs      TaskLog[]
+  fines         Fine[]
+  piggyBanks    PiggyBank[]
+  reactions        Reaction[]
+  comments         Comment[]
+  weeklyResults    WeeklyResult[]
+  sentRequests     Friendship[]   @relation("SentRequests")
+  receivedRequests Friendship[]   @relation("ReceivedRequests")
+  goalLogs         GoalLog[]
+  achievements     Achievement[]
+  challenges       ChallengeParticipant[]
+}
+
+model Goal {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  startDate   String?   // YYYY-MM-DD
+  endDate     String?   // YYYY-MM-DD
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tasks Task[]
+  goalLogs GoalLog[]
+}
+
+model GoalLog {
+  id        String   @id @default(uuid())
+  goalId    String
+  goal      Goal     @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      String   // YYYY-MM-DD
+  createdAt DateTime @default(now())
+
+  @@unique([goalId, date])
+}
+
+model Task {
+  id           String   @id @default(uuid())
+  name         String
+  fineAmount   Int      @default(10)
+  isPrivate    Boolean  @default(false)
+  daysOfWeek   String[] // Array of strings like ["Monday", "Tuesday"]
+  startTime    String?
+  endTime      String?
+  reminderTime String?
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goalId       String?
+  goal         Goal?    @relation(fields: [goalId], references: [id], onDelete: SetNull)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  taskLogs TaskLog[]
+}
+
+model TaskLog {
+  id                 String    @id @default(uuid())
+  date               String // YYYY-MM-DD
+  status             String // e.g., 'done', 'not-done', 'skipped'
+  carriedForwardDate String?
+  taskId             String
+  task               Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId             String
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  fines     Fine[]
+  reactions Reaction[]
+  comments  Comment[]
+
+  @@unique([taskId, date])
+}
+
+model Fine {
+  id        String   @id @default(uuid())
+  amount    Int
+  date      String // YYYY-MM-DD
+  month     String // YYYY-MM
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  taskLogId String
+  taskLog   TaskLog  @relation(fields: [taskLogId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PiggyBank {
+  id        String   @id @default(uuid())
+  purpose   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId])
+}
+
+model Reaction {
+  id         String   @id @default(uuid())
+  emoji      String
+  fromUserId String
+  user       User     @relation(fields: [fromUserId], references: [id], onDelete: Cascade)
+  taskLogId  String
+  taskLog    TaskLog  @relation(fields: [taskLogId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+}
+
+model Comment {
+  id         String   @id @default(uuid())
+  text       String
+  fromUserId String
+  user       User     @relation(fields: [fromUserId], references: [id], onDelete: Cascade)
+  taskLogId  String
+  taskLog    TaskLog  @relation(fields: [taskLogId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+}
+
+model WeeklyResult {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  week      String // e.g., '2023-W01'
+  score     Int
+  createdAt DateTime @default(now())
+}
+
+model Friendship {
+  id          String   @id @default(uuid())
+  requesterId String
+  addresseeId String
+  status      String   @default("PENDING") // 'PENDING', 'ACCEPTED', 'REJECTED'
+  requesterSharesDashboard Boolean @default(false)
+  addresseeSharesDashboard Boolean @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  requester   User     @relation("SentRequests", fields: [requesterId], references: [id], onDelete: Cascade)
+  addressee   User     @relation("ReceivedRequests", fields: [addresseeId], references: [id], onDelete: Cascade)
+
+  @@unique([requesterId, addresseeId])
+}
+
+model Achievement {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  icon        String   // Emoji or SVG name
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+}
+
+model Challenge {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  type        String   // 'STREAK', 'TOTAL_TASKS', 'SAVINGS'
+  startDate   DateTime
+  endDate     DateTime
+  creatorId   String
+  createdAt   DateTime @default(now())
+
+  participants ChallengeParticipant[]
+}
+
+model ChallengeParticipant {
+  id          String   @id @default(uuid())
+  challengeId String
+  challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status      String    @default("JOINED") // 'JOINED', 'COMPLETED', 'FAILED'
+  progress    Float     @default(0)
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([challengeId, userId])
+}

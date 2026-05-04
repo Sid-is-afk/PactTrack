@@ -1,0 +1,16 @@
+node_modules/
+.env
+.env.*
+!.env.example
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Agent/IDE files
+.gemini/
+.vscode/
+
+# Build logs
+build_output*.txt
+users.json

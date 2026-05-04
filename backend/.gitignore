@@ -1,0 +1,13 @@
+node_modules
+# Keep environment variables out of version control
+.env
+.env.*
+!.env.example
+
+# Firebase service account keys and certs
+serviceAccountKey.json
+*-adminsdk-*.json
+*.pem
+*.key
+
+/generated/prisma

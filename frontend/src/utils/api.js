@@ -1,6 +1,6 @@
 import { auth } from '../firebase';
 
-const API_BASE = 'https://pacttrack.onrender.com';
+const API_BASE = 'https://pacttrack.onrender.com/api';
 
 /**
  * Get the current Firebase ID token from the logged-in user.

@@ -34,13 +34,16 @@ export const signInWithGoogle = async () => {
     // 1. Get the token from the native Google Sign-In
     const result = await FirebaseAuthentication.signInWithGoogle({
       webClientId: '975258431449-qr21obh90to37oebf1mk9luh58i0n5cc.apps.googleusercontent.com',
-      useCredentialManager: false, 
+      useCredentialManager: false,
     });
     console.log('signInWithGoogle: Native result:', JSON.stringify(result));
 
-    if (result && result.idToken) {
+    // The token might be at the top level or inside the credential object
+    const idToken = result?.idToken || result?.credential?.idToken;
+
+    if (idToken) {
       console.log('signInWithGoogle: ID Token found. Signing in with credential...');
-      const credential = GoogleAuthProvider.credential(result.idToken);
+      const credential = GoogleAuthProvider.credential(idToken);
       const userCredential = await signInWithCredential(auth, credential);
       console.log('signInWithGoogle: JS SDK sign-in successful');
       return userCredential;

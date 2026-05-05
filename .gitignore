@@ -14,3 +14,6 @@ Thumbs.db
 # Build logs
 build_output*.txt
 users.json
+
+# Firebase / Android
+**/google-services.json

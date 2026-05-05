@@ -31,6 +31,7 @@ export const signInWithGoogle = async () => {
     // We use the Web Client ID from google-services.json (client_type 3)
     return await FirebaseAuthentication.signInWithGoogle({
       webClientId: '975258431449-qr21obh90to37oebf1mk9luh58i0n5cc.apps.googleusercontent.com',
+      useCredentialManager: false, // Fallback to legacy Google Sign-In to avoid "device doesn't support" error
     });
   }
   return signInWithPopup(auth, googleProvider);

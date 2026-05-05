@@ -1,4 +1,6 @@
 import { initializeApp } from 'firebase/app';
+import { Capacitor } from '@capacitor/core';
+import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
 import {
   getAuth,
   GoogleAuthProvider,
@@ -24,7 +26,12 @@ const googleProvider = new GoogleAuthProvider();
 
 // --- Auth Helper Functions ---
 
-export const signInWithGoogle = () => signInWithPopup(auth, googleProvider);
+export const signInWithGoogle = async () => {
+  if (Capacitor.isNativePlatform()) {
+    return await FirebaseAuthentication.signInWithGoogle();
+  }
+  return signInWithPopup(auth, googleProvider);
+};
 
 export const signUpWithEmail = async (email, password, displayName) => {
   const result = await createUserWithEmailAndPassword(auth, email, password);
@@ -36,7 +43,12 @@ export const signUpWithEmail = async (email, password, displayName) => {
 export const signInWithEmail = (email, password) =>
   signInWithEmailAndPassword(auth, email, password);
 
-export const logOut = () => signOut(auth);
+export const logOut = async () => {
+  if (Capacitor.isNativePlatform()) {
+    await FirebaseAuthentication.signOut();
+  }
+  return signOut(auth);
+};
 
 export { auth };
 export default app;

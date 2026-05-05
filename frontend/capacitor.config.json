@@ -1,5 +1,11 @@
 {
   "appId": "com.siddharth.habittracker",
-  "appName": "habit-tracker",
-  "webDir": "dist"
+  "appName": "PactTrack",
+  "webDir": "dist",
+  "plugins": {
+    "FirebaseAuthentication": {
+      "skipNativeAuth": false,
+      "providers": ["google.com"]
+    }
+  }
 }

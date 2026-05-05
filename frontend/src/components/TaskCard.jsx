@@ -53,7 +53,7 @@ export default function TaskCard({ task, log, date, showActions = true, showReac
           </div>
         </div>
 
-        {showActions && (
+        {showActions ? (
           <div style={{ display: 'flex', gap: 4 }}>
             <button onClick={() => handleStatus('done')} className="btn-icon" aria-label="Mark done" title="Done"
               style={{ background: status === 'done' ? 'rgba(34,197,94,0.2)' : undefined, color: status === 'done' ? '#22c55e' : undefined, borderRadius: 10, width: 36, height: 36, fontSize: 16 }}>
@@ -67,6 +67,13 @@ export default function TaskCard({ task, log, date, showActions = true, showReac
               style={{ background: status === 'skipped' ? 'rgba(148,163,184,0.2)' : undefined, color: status === 'skipped' ? '#94a3b8' : undefined, borderRadius: 10, width: 36, height: 36, fontSize: 14 }}>
               ⊘
             </button>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {status === 'done' && <span className="badge badge-success" style={{ fontSize: 12 }}>✓ Done</span>}
+            {status === 'not-done' && <span className="badge badge-danger" style={{ fontSize: 12 }}>✗ Failed</span>}
+            {status === 'skipped' && <span className="badge badge-grey" style={{ fontSize: 12 }}>⊘ Skipped</span>}
+            {status === 'pending' && <span className="badge badge-amber" style={{ fontSize: 12 }}>⏳ Pending</span>}
           </div>
         )}
       </div>

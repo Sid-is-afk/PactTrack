@@ -49,8 +49,15 @@ export default function Auth() {
     try {
       await loginWithGoogle();
     } catch (err) {
-      if (err.code !== 'auth/popup-closed-by-user' && err.code !== 'auth/cancelled-popup-request') {
-        setError(err.message || 'Google sign-in failed.');
+      console.error('Google Sign-In Error:', err);
+      // Don't show error if user just cancelled
+      if (err.code !== 'auth/popup-closed-by-user' && err.code !== 'auth/cancelled-popup-request' && err.message !== 'arg:2') {
+        const errorMsg = err.message || JSON.stringify(err);
+        setError(`Google sign-in failed: ${errorMsg}`);
+        // If it's a native error 10, explain it's likely a SHA-1 issue
+        if (errorMsg.includes('10') || errorMsg.toLowerCase().includes('developer_error')) {
+          setError('Sign-in blocked (Developer Error 10). This usually means the SHA-1 fingerprint is missing in Firebase Console.');
+        }
       }
     } finally {
       setIsSubmitting(false);

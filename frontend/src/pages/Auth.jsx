@@ -58,7 +58,12 @@ export default function Auth() {
     setIsSubmitting(true);
     addLog('Starting Google Sign-In...');
     try {
-      await loginWithGoogle();
+      const result = await loginWithGoogle();
+      addLog(`Result: ${result ? 'Has Data' : 'Empty'}`);
+      if (result) {
+        addLog(`UID: ${result.user?.uid || 'N/A'}`);
+        addLog(`Token: ${result.idToken ? 'Present' : 'MISSING'}`);
+      }
       addLog('Google call finished');
     } catch (err) {
       addLog(`Google Error: ${err.message || JSON.stringify(err)}`);

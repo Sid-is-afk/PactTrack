@@ -41,8 +41,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   const loginWithGoogle = async () => {
-    await signInWithGoogle();
-    // onAuthStateChanged will handle the rest
+    return await signInWithGoogle();
   };
 
   const loginWithEmail = async (email, password) => {

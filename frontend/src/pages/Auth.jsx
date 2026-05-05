@@ -10,12 +10,20 @@ export default function Auth() {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [debugLogs, setDebugLogs] = useState([]);
+
+  const addLog = (msg) => {
+    console.log(msg);
+    setDebugLogs(prev => [...prev.slice(-4), `${new Date().toLocaleTimeString()}: ${msg}`]);
+  };
+
   const { loginWithGoogle, loginWithEmail, signupWithEmail } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setIsSubmitting(true);
+    addLog(`Attempting ${isLogin ? 'Login' : 'Signup'}...`);
     try {
       if (isLogin) {
         await loginWithEmail(email.trim(), password);
@@ -27,7 +35,9 @@ export default function Auth() {
         }
         await signupWithEmail(email.trim(), password, name.trim());
       }
+      addLog('Auth call successful');
     } catch (err) {
+      addLog(`Error: ${err.message}`);
       // Show user-friendly error messages
       const code = err.code;
       if (code === 'auth/email-already-in-use') setError('This email is already registered. Try logging in.');
@@ -46,9 +56,12 @@ export default function Auth() {
     if (isSubmitting) return;
     setError('');
     setIsSubmitting(true);
+    addLog('Starting Google Sign-In...');
     try {
       await loginWithGoogle();
+      addLog('Google call finished');
     } catch (err) {
+      addLog(`Google Error: ${err.message || JSON.stringify(err)}`);
       console.error('Google Sign-In Error:', err);
       // Don't show error if user just cancelled
       if (err.code !== 'auth/popup-closed-by-user' && err.code !== 'auth/cancelled-popup-request' && err.message !== 'arg:2') {
@@ -134,6 +147,13 @@ export default function Auth() {
             {isLogin ? 'Sign up' : 'Log in'}
           </button>
         </div>
+
+        {debugLogs.length > 0 && (
+          <div style={{ marginTop: 20, padding: 10, background: '#000', color: '#0f0', fontSize: 10, borderRadius: 6, textAlign: 'left', fontFamily: 'monospace', opacity: 0.7 }}>
+            <div style={{ borderBottom: '1px solid #333', marginBottom: 4, paddingBottom: 2, fontWeight: 'bold' }}>DEBUG LOG:</div>
+            {debugLogs.map((log, i) => <div key={i}>{log}</div>)}
+          </div>
+        )}
       </div>
     </div>
   );

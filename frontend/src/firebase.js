@@ -28,20 +28,29 @@ const googleProvider = new GoogleAuthProvider();
 // --- Auth Helper Functions ---
 
 export const signInWithGoogle = async () => {
+  console.log('signInWithGoogle: Checking platform...');
   if (Capacitor.isNativePlatform()) {
+    console.log('signInWithGoogle: Native platform detected. Calling FirebaseAuthentication...');
     // 1. Get the token from the native Google Sign-In
     const result = await FirebaseAuthentication.signInWithGoogle({
       webClientId: '975258431449-qr21obh90to37oebf1mk9luh58i0n5cc.apps.googleusercontent.com',
       useCredentialManager: false,
     });
+    console.log('signInWithGoogle: Native result received:', JSON.stringify(result));
 
     // 2. Manually sign in to the Firebase JS SDK using the ID Token
     if (result.idToken) {
+      console.log('signInWithGoogle: ID Token found. Signing in with credential...');
       const credential = GoogleAuthProvider.credential(result.idToken);
-      return await signInWithCredential(auth, credential);
+      const userCredential = await signInWithCredential(auth, credential);
+      console.log('signInWithGoogle: JS SDK sign-in successful');
+      return userCredential;
+    } else {
+      console.warn('signInWithGoogle: No ID Token returned from native plugin');
     }
     return result;
   }
+  console.log('signInWithGoogle: Web platform detected. Calling signInWithPopup...');
   return signInWithPopup(auth, googleProvider);
 };
 

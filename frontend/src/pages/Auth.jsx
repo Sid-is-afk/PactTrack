@@ -1,8 +1,10 @@
 import logo from '../assets/logo.png';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function Auth() {
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -16,7 +18,6 @@ export default function Auth() {
     e.preventDefault();
     setError('');
     setIsSubmitting(true);
-    addLog(`Attempting ${isLogin ? 'Login' : 'Signup'}...`);
     try {
       if (isLogin) {
         await loginWithEmail(email.trim(), password);
@@ -28,7 +29,6 @@ export default function Auth() {
         }
         await signupWithEmail(email.trim(), password, name.trim());
       }
-      addLog('Auth call successful');
     } catch (err) {
       console.error('Submit error:', err);
       // Show user-friendly error messages
@@ -136,13 +136,6 @@ export default function Auth() {
             {isLogin ? 'Sign up' : 'Log in'}
           </button>
         </div>
-
-        {debugLogs.length > 0 && (
-          <div style={{ marginTop: 20, padding: 10, background: '#000', color: '#0f0', fontSize: 10, borderRadius: 6, textAlign: 'left', fontFamily: 'monospace', opacity: 0.7 }}>
-            <div style={{ borderBottom: '1px solid #333', marginBottom: 4, paddingBottom: 2, fontWeight: 'bold' }}>DEBUG LOG:</div>
-            {debugLogs.map((log, i) => <div key={i}>{log}</div>)}
-          </div>
-        )}
       </div>
     </div>
   );

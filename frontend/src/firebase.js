@@ -34,7 +34,7 @@ export const signInWithGoogle = async () => {
     // 1. Get the token from the native Google Sign-In
     const result = await FirebaseAuthentication.signInWithGoogle({
       webClientId: '975258431449-qr21obh90to37oebf1mk9luh58i0n5cc.apps.googleusercontent.com',
-      useCredentialManager: true, // Now supported with added dependencies
+      useCredentialManager: false, // Use legacy flow but with new dependencies
     });
     console.log('signInWithGoogle: Native result received:', JSON.stringify(result));
 

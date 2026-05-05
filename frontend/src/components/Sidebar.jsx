@@ -1,3 +1,4 @@
+import logo from '../assets/logo.png';
 import { NavLink } from 'react-router-dom';
 import useStore from '../store/useStore';
 import { useAuth } from '../context/AuthContext';
@@ -31,7 +32,7 @@ export default function Sidebar() {
     <aside className="app-sidebar">
       <div style={{ padding: '24px 20px', borderBottom: '1px solid var(--border-primary)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: 28 }}>🤝</span>
+          <img src={logo} alt="Logo" style={{ width: 32, height: 32, objectFit: 'contain' }} />
           <h1 className="gradient-text" style={{ fontSize: 22, fontWeight: 800 }}>PactTrack</h1>
         </div>
       </div>

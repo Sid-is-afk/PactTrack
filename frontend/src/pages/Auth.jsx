@@ -1,3 +1,4 @@
+import logo from '../assets/logo.png';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 
@@ -59,7 +60,7 @@ export default function Auth() {
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'var(--bg-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: 16 }}>
       <div className="card" style={{ maxWidth: 400, width: '100%', padding: 40, animation: 'scale-in 0.3s ease-out', textAlign: 'center' }}>
-        <div style={{ fontSize: 48, marginBottom: 8 }}>🤝</div>
+        <img src={logo} alt="PactTrack Logo" style={{ width: 80, height: 80, marginBottom: 16, objectFit: 'contain' }} />
         <h1 className="gradient-text" style={{ fontSize: 32, fontWeight: 800, marginBottom: 8 }}>PactTrack</h1>
         <p style={{ color: 'var(--text-secondary)', marginBottom: 32, fontSize: 15 }}>
           {isLogin ? 'Welcome back to your habits!' : 'Start your accountability journey'}

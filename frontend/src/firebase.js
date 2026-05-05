@@ -8,7 +8,8 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  updateProfile
+  updateProfile,
+  signInWithCredential
 } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -28,11 +29,18 @@ const googleProvider = new GoogleAuthProvider();
 
 export const signInWithGoogle = async () => {
   if (Capacitor.isNativePlatform()) {
-    // We use the Web Client ID from google-services.json (client_type 3)
-    return await FirebaseAuthentication.signInWithGoogle({
+    // 1. Get the token from the native Google Sign-In
+    const result = await FirebaseAuthentication.signInWithGoogle({
       webClientId: '975258431449-qr21obh90to37oebf1mk9luh58i0n5cc.apps.googleusercontent.com',
-      useCredentialManager: false, // Fallback to legacy Google Sign-In to avoid "device doesn't support" error
+      useCredentialManager: false,
     });
+
+    // 2. Manually sign in to the Firebase JS SDK using the ID Token
+    if (result.idToken) {
+      const credential = GoogleAuthProvider.credential(result.idToken);
+      return await signInWithCredential(auth, credential);
+    }
+    return result;
   }
   return signInWithPopup(auth, googleProvider);
 };

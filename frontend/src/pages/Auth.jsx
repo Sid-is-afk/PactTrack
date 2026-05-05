@@ -42,13 +42,17 @@ export default function Auth() {
   };
 
   const handleGoogleSignIn = async () => {
+    if (isSubmitting) return;
     setError('');
+    setIsSubmitting(true);
     try {
       await loginWithGoogle();
     } catch (err) {
-      if (err.code !== 'auth/popup-closed-by-user') {
+      if (err.code !== 'auth/popup-closed-by-user' && err.code !== 'auth/cancelled-popup-request') {
         setError(err.message || 'Google sign-in failed.');
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -97,11 +101,12 @@ export default function Auth() {
         <button
           type="button"
           onClick={handleGoogleSignIn}
+          disabled={isSubmitting}
           style={{
             width: '100%', padding: '12px 20px', borderRadius: 12, border: '1px solid var(--border-primary)',
             background: 'var(--bg-secondary)', color: 'var(--text-primary)', fontSize: 14, fontWeight: 600,
-            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-            transition: 'all 0.2s',
+            cursor: isSubmitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+            transition: 'all 0.2s', opacity: isSubmitting ? 0.7 : 1,
           }}
           onMouseOver={(e) => e.currentTarget.style.background = 'var(--bg-tertiary)'}
           onMouseOut={(e) => e.currentTarget.style.background = 'var(--bg-secondary)'}

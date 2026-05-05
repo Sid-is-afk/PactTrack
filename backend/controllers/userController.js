@@ -105,6 +105,13 @@ const getSharedDashboard = async (req, res) => {
           where: { isPrivate: false }
         },
         goals: true,
+        taskLogs: {
+          where: { task: { isPrivate: false } }
+        },
+        fines: {
+          where: { taskLog: { task: { isPrivate: false } } }
+        },
+        piggyBanks: true,
       }
     });
 

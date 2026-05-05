@@ -103,18 +103,18 @@ export default function Friends() {
   const handleRemove = async (friendId) => {
     setActionError('');
     try {
-      // We need the friendship ID — find it from friends list
-      // The friends list returns user objects, but we need the friendship record.
-      // Let's re-fetch friendships with full data to find the ID.
-      const allFriendships = await apiGet('/friendships');
-      // allFriendships are user objects — we need friendship IDs. 
-      // The backend /friendships returns user objects, not friendship objects.
-      // We need to adjust. For now, use a different approach: 
-      // Fetch raw friendships and find the one matching this friend.
-      // Actually, the getFriends endpoint returns user objects. We need to extend it.
-      // Let's use a workaround — delete by friend user ID via a search.
-      // Better approach: store friendship data alongside.
       await apiDelete(`/friendships/${friendId}`);
+      fetchData();
+    } catch (err) {
+      setActionError(err.message);
+    }
+  };
+
+  // --- Toggle Share Dashboard ---
+  const handleToggleShare = async (friendshipId, currentShare) => {
+    setActionError('');
+    try {
+      await apiPut(`/friendships/${friendshipId}/toggle-share`, { share: !currentShare });
       fetchData();
     } catch (err) {
       setActionError(err.message);
@@ -277,7 +277,19 @@ export default function Friends() {
                         <div style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>{friend.email}</div>
                       </div>
                     </div>
-                    <button onClick={() => handleRemove(friend.id)} className="btn-danger-soft">🗑️ Remove</button>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-secondary)' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+                          <input 
+                            type="checkbox" 
+                            checked={friend.isRequester ? friend.requesterSharesDashboard : friend.addresseeSharesDashboard}
+                            onChange={() => handleToggleShare(friend.friendshipId, friend.isRequester ? friend.requesterSharesDashboard : friend.addresseeSharesDashboard)}
+                          />
+                          Share Dashboard
+                        </label>
+                      </div>
+                      <button onClick={() => handleRemove(friend.id)} className="btn-danger-soft" style={{ padding: '6px 12px', fontSize: 13 }}>🗑️ Remove</button>
+                    </div>
                   </div>
                 ))}
               </div>

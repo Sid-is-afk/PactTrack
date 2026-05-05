@@ -62,7 +62,11 @@ export default function Auth() {
       addLog(`Result: ${result ? 'Has Data' : 'Empty'}`);
       if (result) {
         addLog(`UID: ${result.user?.uid || 'N/A'}`);
-        addLog(`Token: ${result.idToken ? 'Present' : 'MISSING'}`);
+        if (result.idToken) {
+          addLog(`Token: Present`);
+        } else {
+          addLog(`Token: MISSING! Result has: ${Object.keys(result).join(', ')}`);
+        }
       }
       addLog('Google call finished');
     } catch (err) {

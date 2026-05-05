@@ -10,13 +10,6 @@ export default function Auth() {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [debugLogs, setDebugLogs] = useState([]);
-
-  const addLog = (msg) => {
-    console.log(msg);
-    setDebugLogs(prev => [...prev.slice(-4), `${new Date().toLocaleTimeString()}: ${msg}`]);
-  };
-
   const { loginWithGoogle, loginWithEmail, signupWithEmail } = useAuth();
 
   const handleSubmit = async (e) => {
@@ -37,7 +30,7 @@ export default function Auth() {
       }
       addLog('Auth call successful');
     } catch (err) {
-      addLog(`Error: ${err.message}`);
+      console.error('Submit error:', err);
       // Show user-friendly error messages
       const code = err.code;
       if (code === 'auth/email-already-in-use') setError('This email is already registered. Try logging in.');
@@ -56,27 +49,14 @@ export default function Auth() {
     if (isSubmitting) return;
     setError('');
     setIsSubmitting(true);
-    addLog('Starting Google Sign-In...');
     try {
-      const result = await loginWithGoogle();
-      addLog(`Result: ${result ? 'Has Data' : 'Empty'}`);
-      if (result) {
-        addLog(`UID: ${result.user?.uid || 'N/A'}`);
-        if (result.idToken) {
-          addLog(`Token: Present`);
-        } else {
-          addLog(`Token: MISSING! Result has: ${Object.keys(result).join(', ')}`);
-        }
-      }
-      addLog('Google call finished');
+      await loginWithGoogle();
+      navigate('/dashboard');
     } catch (err) {
-      addLog(`Google Error: ${err.message || JSON.stringify(err)}`);
-      console.error('Google Sign-In Error:', err);
-      // Don't show error if user just cancelled
-      if (err.code !== 'auth/popup-closed-by-user' && err.code !== 'auth/cancelled-popup-request' && err.message !== 'arg:2') {
+      console.error('Google sign-in error:', err);
+      if (err.code !== 'auth/popup-closed-by-user' && err.code !== 'auth/cancelled-popup-request') {
         const errorMsg = err.message || JSON.stringify(err);
         setError(`Google sign-in failed: ${errorMsg}`);
-        // If it's a native error 10, explain it's likely a SHA-1 issue
         if (errorMsg.includes('10') || errorMsg.toLowerCase().includes('developer_error')) {
           setError('Sign-in blocked (Developer Error 10). This usually means the SHA-1 fingerprint is missing in Firebase Console.');
         }

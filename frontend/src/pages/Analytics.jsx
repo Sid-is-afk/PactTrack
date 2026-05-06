@@ -95,29 +95,29 @@ export default function Analytics() {
         <Heatmap dates={allDoneDates} title="Annual Consistency" />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 20 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))', gap: 20 }}>
         {/* Weekly Completion */}
-        <div className="card" style={{ padding: 20 }}>
+        <div className="card" style={{ padding: '20px 12px 20px 4px', overflow: 'hidden' }}>
           <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Weekly Completion %</h3>
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={weeklyData}>
-              <XAxis dataKey="week" tick={{ fontSize: 11, fill: 'var(--text-tertiary)' }} />
-              <YAxis tick={{ fontSize: 11, fill: 'var(--text-tertiary)' }} domain={[0, 100]} />
-              <Tooltip contentStyle={tooltipStyle} />
-              <Bar dataKey="pct" fill="#14b8a6" radius={[6, 6, 0, 0]} name="Completion %" />
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={weeklyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <XAxis dataKey="week" tick={{ fontSize: 10, fill: 'var(--text-tertiary)' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: 'var(--text-tertiary)' }} domain={[0, 100]} axisLine={false} tickLine={false} />
+              <Tooltip contentStyle={tooltipStyle} cursor={{ fill: 'rgba(20, 184, 166, 0.05)' }} />
+              <Bar dataKey="pct" fill="#14b8a6" radius={[6, 6, 0, 0]} name="Completion %" barSize={30} />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
         {/* Weekly Trend */}
-        <div className="card" style={{ padding: 20 }}>
-          <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Weekly Trend</h3>
-          <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={weeklyData}>
-              <XAxis dataKey="week" tick={{ fontSize: 11, fill: 'var(--text-tertiary)' }} />
-              <YAxis tick={{ fontSize: 11, fill: 'var(--text-tertiary)' }} domain={[0, 100]} />
+        <div className="card" style={{ padding: '20px 12px 20px 4px', overflow: 'hidden' }}>
+          <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16, paddingLeft: 16 }}>Weekly Trend</h3>
+          <ResponsiveContainer width="100%" height={220}>
+            <LineChart data={weeklyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <XAxis dataKey="week" tick={{ fontSize: 10, fill: 'var(--text-tertiary)' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: 'var(--text-tertiary)' }} domain={[0, 100]} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={tooltipStyle} />
-              <Line type="monotone" dataKey="pct" stroke="#14b8a6" strokeWidth={3} dot={{ fill: '#14b8a6', r: 5 }} name="Completion %" />
+              <Line type="monotone" dataKey="pct" stroke="#14b8a6" strokeWidth={3} dot={{ fill: '#14b8a6', r: 4 }} activeDot={{ r: 6 }} name="Completion %" />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -146,15 +146,15 @@ export default function Analytics() {
         </div>
 
         {/* Fine Trend */}
-        <div className="card" style={{ padding: 20 }}>
-          <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Fine Trend (3 Months)</h3>
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={fineTrend}>
-              <XAxis dataKey="month" tick={{ fontSize: 11, fill: 'var(--text-tertiary)' }} />
-              <YAxis tick={{ fontSize: 11, fill: 'var(--text-tertiary)' }} />
+        <div className="card" style={{ padding: '20px 12px 20px 4px', overflow: 'hidden' }}>
+          <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16, paddingLeft: 16 }}>Fine Trend (3 Months)</h3>
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={fineTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <XAxis dataKey="month" tick={{ fontSize: 10, fill: 'var(--text-tertiary)' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: 'var(--text-tertiary)' }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={tooltipStyle} formatter={(v) => `₹${v}`} />
-              <Bar dataKey={activeUser?.name || 'You'} fill="#14b8a6" radius={[6, 6, 0, 0]} />
-              <Bar dataKey={otherUser?.name || 'Partner'} fill="#f59e0b" radius={[6, 6, 0, 0]} />
+              <Bar dataKey={activeUser?.name || 'You'} fill="#14b8a6" radius={[4, 4, 0, 0]} barSize={20} />
+              <Bar dataKey={otherUser?.name || 'Partner'} fill="#f59e0b" radius={[4, 4, 0, 0]} barSize={20} />
             </BarChart>
           </ResponsiveContainer>
         </div>

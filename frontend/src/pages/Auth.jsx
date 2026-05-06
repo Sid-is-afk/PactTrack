@@ -51,7 +51,7 @@ export default function Auth() {
     setIsSubmitting(true);
     try {
       await loginWithGoogle();
-      navigate('/dashboard');
+      navigate('/');
     } catch (err) {
       console.error('Google sign-in error:', err);
       if (err.code !== 'auth/popup-closed-by-user' && err.code !== 'auth/cancelled-popup-request') {
